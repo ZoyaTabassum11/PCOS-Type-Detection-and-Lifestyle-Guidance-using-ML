@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCOS Health Plan & Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Custom hover effects for better interactivity */
+        .subbtn{
+            background-color: #007bff;
+            color: white;
+        }
+        .btn:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            color: white;
+            transform: translateY(-1px); /* Slight lift */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft shadow */
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #4c51bf; /* Indigo border on focus */
+            box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.3); /* Soft indigo shadow on focus */
+            outline: none; /* Remove default outline */
+        }
+        .plan-card {
+            transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+        }
+        .plan-card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2); /* Enhanced shadow */
+            transform: translateY(-5px); /* More pronounced lift */
+        }
+        .meal-plan li a, .video-links li a {
+            color: #4c51bf; /* Indigo link color */
+            transition: color 0.2s ease-in-out;
+        }
+        .meal-plan li a:hover, .video-links li a:hover, .plan-header i {
+            color: #007bff; /* Brighter blue on hover for links and icons */
+        }
+        .plan-title {
+            border-bottom: 2px solid #4c51bf; /* Underline effect for plan titles */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .error-message {
+            color: #dc3545; /* Bootstrap red for error messages */
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin-top: 1rem;
+        }
+        .upload-section {
+            background-color: #e0f7fa; /* Light blue background for upload section */
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px dashed #007bff;
+        }
+        .upload-section input[type="file"] {
+            margin-bottom: 10px;
+        }
+        .upload-section button {
+            background-color: #007bff;
+        }
+        .upload-section button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-roboto antialiased">
+    <header class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-16 shadow-lg">
+        <div class="container mx-auto text-center px-4">
+            <h1 class="text-5xl font-extrabold mb-4 animate-fade-in">PCOS Prediction & Health Guidance</h1>
+            <p class="text-xl opacity-90">Empowering women with personalized insights and actionable lifestyle recommendations for better health.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-10 px-4">
+        <section class="bg-white shadow-xl rounded-lg p-8 mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-indigo-400 pb-3"><i class="fas fa-stethoscope mr-3 text-indigo-500"></i> PCOS Type Prediction</h2>
+            <div class="upload-section">
+            <h2>Upload Medical Report (PDF/Image)</h2>
+            <p>Upload your report to auto-fill the form below. Please ensure the report is clear and readable for best results.</p>
+            <form action="{{ url_for('upload_report') }}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="report_file">Choose Report File:</label>
+                    <input type="file" id="report_file" name="report_file" accept=" .png, .jpg, .jpeg">
+                </div>
+                <button type="submit">Upload & Auto-Fill</button>
+            </form>
+            </div>
+            <form action="/predict" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="md:col-span-3 text-center pt-4">
+                    <p class="text-gray-700 text-sm font-bold mb-2">OR</p>
+                </div>
+                <div class="form-group">
+                    <label for="Age(yrs)" class="block text-gray-700 text-sm font-bold mb-2">Age (yrs):</label>
+                    <input type="number" id="Age(yrs)" name="Age(yrs)" placeholder="10 - 50" min="10" max="50" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="Weight(Kg)" class="block text-gray-700 text-sm font-bold mb-2">Weight (Kg):</label>
+                    <input type="number" id="Weight(Kg)" name="Weight(Kg)" placeholder="30 - 150" min="30" max="150" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="Height(Cm)" class="block text-gray-700 text-sm font-bold mb-2">Height (Cm):</label>
+                    <input type="number" id="Height(Cm)" name="Height(Cm)" placeholder="120 - 210" min="120" max="210" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="BMI" class="block text-gray-700 text-sm font-bold mb-2">BMI:</label>
+                    <input type="number" id="BMI" name="BMI" placeholder="10 - 60" step="0.1" min="10" max="60" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="Blood Group" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-tint mr-2 text-red-500"></i> Blood Group:</label>
+                    <select id="Blood Group" name="Blood Group" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="1">A+</option>
+                        <option value="2">A-</option>
+                        <option value="3">B+</option>
+                        <option value="4">B-</option>
+                        <option value="5">O+</option>
+                        <option value="6">O-</option>
+                        <option value="7">AB+</option>
+                        <option value="8">AB-</option>
+                    </select>
+                </div>
+                
+                
+                <div class="form-group">
+                    <label for="Hb(g/dl)" class="block text-gray-700 text-sm font-bold mb-2">Hb (g/dl):</label>
+                    <input type="number" id="Hb(g/dl)" name="Hb(g/dl)" placeholder="7 - 18" step="0.1" min="7" max="18" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="Cycle(R/I)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-calendar-alt mr-2 text-blue-500"></i> Cycle (Regular/Irregular):</label>
+                    <select id="Cycle(R/I)" name="Cycle(R/I)" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="1">Regular</option>
+                        <option value="0">Irregular</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Cycle length(days)" class="block text-gray-700 text-sm font-bold mb-2">Cycle Length (days):</label>
+                    <input type="number" id="Cycle length(days)" name="Cycle length(days)" placeholder="20 - 45" min="20" max="45" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="Marraige Status(Yrs)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-ring mr-2 text-yellow-600"></i> Marriage Status (Yrs):</label>
+                    <input type="number" id="Marraige Status(Yrs)" name="Marraige Status(Yrs)" placeholder="0 - 1 (0=Not Married, 1=Married)" min="0" max="1" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="Pregnant(Y/N)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-baby mr-2 text-purple-500"></i> Pregnant (Yes/No):</label>
+                    <select id="Pregnant(Y/N)" name="Pregnant(Y/N)" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="I beta-HCG(mIU/mL)" class="block text-gray-700 text-sm font-bold mb-2">I beta-HCG (mIU/mL):</label>
+                    <input type="number" id="I beta-HCG(mIU/mL)" name="I beta-HCG(mIU/mL)" placeholder="0 - 50000" min="0" max="50000" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="II beta-HCG(mIU/mL)" class="block text-gray-700 text-sm font-bold mb-2">II beta-HCG (mIU/mL):</label>
+                    <input type="number" id="II beta-HCG(mIU/mL)" name="II beta-HCG(mIU/mL)" placeholder="0 - 50000" min="0" max="50000" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="FSH(mIU/mL)" class="block text-gray-700 text-sm font-bold mb-2">FSH (mIU/mL):</label>
+                    <input type="number" id="FSH(mIU/mL)" name="FSH(mIU/mL)" placeholder="0 - 40" min="0" max="40" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="LH(mIU/mL)" class="block text-gray-700 text-sm font-bold mb-2">LH (mIU/mL):</label>
+                    <input type="number" id="LH(mIU/mL)" name="LH(mIU/mL)" placeholder="0 - 20" min="0" max="20" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+
+
+                <div class="form-group">
+                    <label for="FSH/LH" class="block text-gray-700 text-sm font-bold mb-2">FSH/LH:</label>
+                    <input type="number" id="FSH/LH" name="FSH/LH" placeholder="0 - 2" step="0.1" min="0" max="2" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="Hip(inch)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-ruler-horizontal mr-2 text-gray-600"></i> Hip (inches):</label>
+                    <input type="number" id="Hip(inch)" name="Hip(inch)" placeholder="20 - 60" min="20" max="60" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="Waist(inch)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-ruler-horizontal mr-2 text-gray-600"></i> Waist (inches):</label>
+                    <input type="number" id="Waist(inch)" name="Waist(inch)" placeholder="20 - 60" min="20" max="60" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                
+                <div class="form-group">
+                    <label for="TSH(mIU/L)" class="block text-gray-700 text-sm font-bold mb-2">TSH (mIU/L):</label>
+                    <input type="number" id="TSH(mIU/L)" name="TSH(mIU/L)" placeholder="0.3 - 5.5" step="0.1" min="0.3" max="5.5" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+
+                <div class="form-group">
+                    <label for="AMH(ng/mL)" class="block text-gray-700 text-sm font-bold mb-2">AMH (ng/mL):</label>
+                    <input type="number" id="AMH(ng/mL)" name="AMH(ng/mL)" placeholder="0.1 - 20" step="0.1" min="0.1" max="20" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+
+                <div class="form-group">
+                    <label for="PRL(ng/mL)" class="block text-gray-700 text-sm font-bold mb-2">PRL (ng/mL):</label>
+                    <input type="number" id="PRL(ng/mL)" name="PRL(ng/mL)" placeholder="1 - 25" step="1" min="1" max="25" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+
+                <div class="form-group">
+                    <label for="Vit D3(ng/mL)" class="block text-gray-700 text-sm font-bold mb-2">Vitamin D3 (ng/mL):</label>
+                    <input type="number" id="Vit D3(ng/mL)" name="Vit D3(ng/mL)" placeholder="10 - 50" step="0.1" min="10" max="50" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+
+                <div class="form-group">
+                    <label for="PRG(ng/mL)" class="block text-gray-700 text-sm font-bold mb-2">PRG (ng/mL):</label>
+                    <input type="number" id="PRG(ng/mL)" name="PRG(ng/mL)" placeholder="1 - 10" step="1" min="1" max="10" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+
+                <div class="form-group">
+                    <label for="RBS(mg/dl)" class="block text-gray-700 text-sm font-bold mb-2">RBS (mg/dl):</label>
+                    <input type="number" id="RBS(mg/dl)" name="RBS(mg/dl)" placeholder="70 - 500" min="70" max="500" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="form-group">
+                    <label for="Weight gain(Y/N)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-weight mr-2 text-brown-500"></i> Weight Gain (Y/N):</label>
+                    <select id="Weight gain(Y/N)" name="Weight gain(Y/N)" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="hair growth(Y/N)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-spa mr-2 text-green-700"></i> Hair Growth (Y/N):</label>
+                    <select id="hair growth(Y/N)" name="hair growth(Y/N)" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Skin darkening(Y/N)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-adjust mr-2 text-orange-500"></i> Skin Darkening (Y/N):</label>
+                    <select id="Skin darkening(Y/N)" name="Skin darkening(Y/N)" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Hair loss(Y/N)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-cut mr-2 text-red-700"></i> Hair Loss (Y/N):</label>
+                    <select id="Hair loss(Y/N)" name="Hair loss(Y/N)" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Pimples(Y/N)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-face-grimace mr-2 text-purple-700"></i> Pimples (Y/N):</label>
+                    <select id="Pimples(Y/N)" name="Pimples(Y/N)" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Fast food(Y/N)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-hamburger mr-2 text-yellow-700"></i> Fast Food (Y/N):</label>
+                    <select id="Fast food(Y/N)" name="Fast food(Y/N)" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Reg.Exercise(Y/N)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-running mr-2 text-teal-600"></i> Regular Exercise (Y/N):</label>
+                    <select id="Reg.Exercise(Y/N)" name="Reg.Exercise(Y/N)" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                
+                
+                
+                <div class="form-group">
+                    <label for="Follicle No.(L)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-egg mr-2 text-yellow-500"></i> Follicle Number (Left):</label>
+                    <input type="number" id="Follicle No.(L)" name="Follicle No.(L)" placeholder="0 - 20" min="0" max="20" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                
+                <div class="form-group">
+                    <label for="Follicle No.(R)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-egg mr-2 text-yellow-500"></i> Follicle Number (Right):</label>
+                    <input type="number" id="Follicle No.(R)" name="Follicle No.(R)" placeholder="0 - 20" min="0" max="20" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                
+                <div class="form-group">
+                    <label for="Avg.F size(L)(mm)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-expand-alt mr-2 text-cyan-600"></i> Average Follicle Size (Left) (mm):</label>
+                    <input type="number" id="Avg.F size(L)(mm)" name="Avg.F size(L)(mm)" placeholder="0 - 30" step="0.1" min="0" max="30" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                
+                <div class="form-group">
+                    <label for="Avg.F size(R)(mm)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-expand-alt mr-2 text-cyan-600"></i> Average Follicle Size (Right) (mm):</label>
+                    <input type="number" id="Avg.F size(R)(mm)" name="Avg.F size(R)(mm)" placeholder="0 - 30" step="0.1" min="0" max="30" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                
+                <div class="form-group">
+                    <label for="Endometrium(mm)" class="block text-gray-700 text-sm font-bold mb-2"><i class="fas fa-ruler mr-2 text-indigo-700"></i> Endometrium (mm):</label>
+                    <input type="number" id="Endometrium(mm)" name="Endometrium(mm)" placeholder="1 - 20" step="0.1" min="1" max="20" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200">
+                </div>
+                <div class="md:col-span-2 lg:col-span-3 text-center pt-4">
+                    <button type="submit" class=" subbtn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full focus:outline-none focus:shadow-outline-indigo focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-300 ease-in-out transform hover:scale-105 btn">
+                        <i class="fas fa-chart-line mr-2"></i> Predict PCOS Type
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        {% if errors %}
+        <div class="alert alert-danger mb-8" role="alert">
+            <h4 class="alert-heading text-xl font-bold mb-2"><i class="fas fa-exclamation-triangle mr-2"></i> Input Errors:</h4>
+            <ul class="list-unstyled">
+                {% for error in errors %}
+                    <li class="mb-1">{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if prediction_text %}
+            <section class="bg-white shadow-xl rounded-lg p-8 mb-12">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-purple-400 pb-3"><i class="fas fa-lightbulb mr-3 text-purple-600"></i> Your PCOS Prediction: <span class="text-indigo-600">{{ prediction_text }}</span></h2>
+                
+                <section class="health-plan-section mt-8">
+                    <h2 class="text-2xl font-semibold mb-6 text-purple-700 plan-title"><i class="fas fa-notes-medical mr-2 text-purple-600"></i> Personalized Health Plan</h2>
+                    {% if plan != "PCOS type not recognized. Provide a valid type." %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div class="plan-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                            <img src="{{ url_for('static', filename='images/meal-plan.jpeg') }}" alt="Diet Plan Image" class="w-full h-40 object-cover object-center">
+                            <div class="p-5">
+                                <h3 class="font-bold text-xl mb-3 text-green-700 plan-header"><i class="fas fa-utensils mr-2"></i> Diet Plan</h3>
+                                <p class="text-gray-700 text-sm mb-4">{{ plan["Diet"]["Details"] }}</p>
+                                <h4 class="text-lg font-semibold text-gray-800 mb-2">Meal Plan Suggestions:</h4>
+                                <ul class="list-disc pl-5 text-gray-600 text-sm meal-plan">
+                                    <li><strong>Breakfast:</strong> {{ plan["Diet"]["Meal Plan"]["Breakfast"] }} <a href="YOUR_BREAKFAST_RECIPE_LINK_HERE" target="_blank" class="text-blue-500 hover:text-blue-700 hover:underline"><i class="fas fa-external-link-alt ml-1"></i> Recipe</a></li>
+                                    <li><strong>Lunch:</strong> {{ plan["Diet"]["Meal Plan"]["Lunch"] }} <a href="YOUR_LUNCH_RECIPE_LINK_HERE" target="_blank" class="text-blue-500 hover:text-blue-700 hover:underline"><i class="fas fa-external-link-alt ml-1"></i> Recipe</a></li>
+                                    <li><strong>Dinner:</strong> {{ plan["Diet"]["Meal Plan"]["Dinner"] }} <a href="YOUR_DINNER_RECIPE_LINK_HERE" target="_blank" class="text-blue-500 hover:text-blue-700 hover:underline"><i class="fas fa-external-link-alt ml-1"></i> Recipe</a></li>
+                                    <li><strong>Snacks:</strong> {{ plan["Diet"]["Meal Plan"]["Snack"] }} <a href="YOUR_SNACK_RECIPE_LINK_HERE" target="_blank" class="text-blue-500 hover:text-blue-700 hover:underline"><i class="fas fa-external-link-alt ml-1"></i> Recipe</a></li>
+                                </ul>
+                            </div>
+                        </div>
+        
+                        <div class="plan-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                            <img src="{{ url_for('static', filename='images/exercise.jpeg') }}" alt="Exercise Plan Image" class="w-full h-40 object-cover object-center">
+                            <div class="p-5">
+                                <h3 class="font-bold text-xl mb-3 text-orange-600 plan-header"><i class="fas fa-dumbbell mr-2"></i> Exercise Plan</h3>
+                                <p class="text-gray-700 text-sm mb-4">{{ plan["Exercise"]["Details"] }}</p>
+                                <h4 class="text-lg font-semibold text-gray-800 mb-2">Helpful Videos:</h4>
+                                <ul class="list-disc pl-5 text-gray-600 text-sm video-links">
+                                    <li><a href="YOUR_SWIMMING_VIDEO_LINK_HERE" target="_blank" class="text-blue-500 hover:text-blue-700 hover:underline"><i class="fab fa-youtube mr-1"></i> Swimming Basics for Beginners</a></li>
+                                    <li><a href="YOUR_HIKING_VIDEO_LINK_HERE" target="_blank" class="text-blue-500 hover:text-blue-700 hover:underline"><i class="fab fa-youtube mr-1"></i> Hiking Tips and Techniques</a></li>
+                                </ul>
+                            </div>
+                        </div>
+        
+                        <div class="plan-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                            <img src="{{ url_for('static', filename='images/supplements.jpeg') }}" alt="Supplements Image" class="w-full h-40 object-cover object-center">
+                            <div class="p-5">
+                                <h3 class="font-bold text-xl mb-3 text-blue-700 plan-header"><i class="fas fa-pills mr-2"></i> Recommended Supplements</h3>
+                                <p class="text-gray-700 text-sm mb-4">Consider incorporating the following supplements, but always consult a doctor before starting new supplements:</p>
+                                <ul class="list-disc pl-5 text-gray-600 text-sm">
+                                    {% for supplement in plan["Supplements"]["Details"] %}
+                                        <li>{{ supplement }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+    
+                        <div class="plan-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                            <img src="{{ url_for('static', filename='images/stress-management.jpeg') }}" alt="Stress Management Image" class="w-full h-40 object-cover object-center">
+                            <div class="p-5">
+                                <h3 class="font-bold text-xl mb-3 text-purple-700 plan-header"><i class="fas fa-brain mr-2"></i> Stress Management</h3>
+                                <p class="text-gray-700 text-sm mb-4">{{ plan["Stress Management"]["Details"] }}</p>
+                                <h4 class="text-lg font-semibold text-gray-800 mb-2">Related Videos:</h4>
+                                <ul class="list-disc pl-5 text-gray-600 text-sm video-links">
+                                    <li><a href="YOUR_JOURNALING_VIDEO_LINK_HERE" target="_blank" class="text-blue-500 hover:text-blue-700 hover:underline"><i class="fab fa-youtube mr-1"></i> How to Start Journaling</a></li>
+                                    <li><a href="YOUR_ART_THERAPY_VIDEO_LINK_HERE" target="_blank" class="text-blue-500 hover:text-blue-700 hover:underline"><i class="fab fa-youtube mr-1"></i> Art Therapy for Stress Relief</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="error-message text-center text-lg font-semibold">{{ plan }}</p>
+                    {% endif %}
+                </section>
+            </section>
+        {% endif %}
+    </main>
+    
+    <footer class="bg-gray-800 text-white py-6 text-center shadow-inner">
+        <p class="text-sm">&copy; 2024 PCOS Wellness Hub. All rights reserved.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
